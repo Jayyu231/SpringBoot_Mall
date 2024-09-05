@@ -43,4 +43,25 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
 
     }
+
+    @PutMapping("/products/{productId}")
+    public ResponseEntity<Product> updateProduct(@PathVariable  Integer productId,
+                                                 @RequestBody @Valid ProductRequest productRequest){
+
+        // 先確認是否productId 存在與否?  先進去資料庫內看productId是否存在?
+        Product productInDB = productService.getProductById(productId);
+
+        // 如果 productId 不存在的話，就回傳 404 not Found(網頁不存在)
+        if (productInDB  == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        // 如果 productId 存在的話，就更新商品，回傳200，並且更新新的Product。
+        productService.updateProduct(productId, productRequest);
+        Product product = productService.getProductById(productId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(product);
+    }
+
+
 }
