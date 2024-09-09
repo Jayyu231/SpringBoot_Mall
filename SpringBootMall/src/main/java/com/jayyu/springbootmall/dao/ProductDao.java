@@ -1,5 +1,6 @@
 package com.jayyu.springbootmall.dao;
 
+import com.jayyu.springbootmall.constant.ProductCategory;
 import com.jayyu.springbootmall.dto.ProductRequest;
 import com.jayyu.springbootmall.model.Product;
 import org.springframework.stereotype.Component;
@@ -17,5 +18,5 @@ public interface ProductDao {
 
     void deleteProductById(Integer productId);
 
-    List<Product> getProducts();
+    List<Product> getProducts(ProductCategory category, String search);
 }

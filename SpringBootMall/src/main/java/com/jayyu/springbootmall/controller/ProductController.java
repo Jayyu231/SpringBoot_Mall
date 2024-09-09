@@ -1,6 +1,7 @@
 package com.jayyu.springbootmall.controller;
 
 //import com.jayyu.springbootmall.service.ProductService;
+import com.jayyu.springbootmall.constant.ProductCategory;
 import com.jayyu.springbootmall.dao.ProductDao;
 import com.jayyu.springbootmall.dto.ProductRequest;
 import com.jayyu.springbootmall.model.Product;
@@ -24,8 +25,12 @@ public class ProductController {
 
 
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts(){
-        List<Product> products = productService.getProducts();
+    public ResponseEntity<List<Product>> getProducts(
+            @RequestParam (required = false) ProductCategory category
+            , @RequestParam (required = false) String search
+        ){
+
+        List<Product> products = productService.getProducts(category, search);
 
         // 把回傳的內容(products) 放在response body 內，回傳給前端。
         return ResponseEntity.status(HttpStatus.OK).body(products);
@@ -47,7 +52,8 @@ public class ProductController {
     // Q:這個功能的目的是?   從前端將 json 檔案匯入到後端的這個端口(endpoint)後，把回傳格式以Product 傳回 A:Yes
     //  不過，沒辦法一次到位，要先取得 productId, 再取得 product
     @PostMapping("/products")
-    public ResponseEntity<Product> createProduct(@RequestBody @Valid ProductRequest productRequest){
+    public ResponseEntity<Product> createProduct(
+            @RequestBody @Valid ProductRequest productRequest){
         Integer productId =  productService.createProduct(productRequest);
         Product product = productService.getProductById(productId);
 

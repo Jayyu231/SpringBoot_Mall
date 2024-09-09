@@ -88,17 +88,6 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public List<Product> getProducts() {
-//       String sql = "select product_id, product_name, category, image_url, price, stock," +
-//               "description, create_date, last_modified_date from product";
-       String sql = "select * from product";
-       Map<String, Object> map = new HashMap<>();
-
-
-       return namedParameterJdbcTemplate.query(sql, map,  new ProductRowMapper());
-    }
-
-    @Override
     public Product getProductById(Integer productId) {
         String sql = "select product_id ,product_name, category, image_url, price, stock," +
                 " description, create_date, last_modified_date " +
@@ -114,6 +103,29 @@ public class ProductDaoImpl implements ProductDao {
             return null;
         }
 
+    }
+
+    @Override
+    public List<Product> getProducts(ProductCategory category, String search) {
+       String sql = "select product_id, product_name, category, image_url, price, stock," +
+               "description, create_date, last_modified_date from product where 1=1";
+//        String sql = "select * from product";
+
+        Map<String, Object> map = new HashMap<>();
+       if (category != null) {
+           sql = sql  + " AND category= :category";
+//           sql = sql + "where 1=1" + " AND category= :category";   // Not working!!! where 必須加到 前面的sql 內
+           map.put("category", category.name());
+       }
+
+      if (search != null) {
+          sql = sql  + " AND product_name like :search";
+          map.put("search", "%" + search + "%");
+      }
+
+
+
+        return namedParameterJdbcTemplate.query(sql, map,  new ProductRowMapper());
     }
 
 }
